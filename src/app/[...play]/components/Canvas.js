@@ -16,7 +16,7 @@ export default function CanvasComponent({fillColor, color}) {
   const [isDrawing,
     setIsDrawing] = React.useState(false);
   const [turn,
-    setTurn] = React.useState(false);
+    setTurn] = React.useState(true);
   const [id,
     setId] = React.useState('');
   const [lines,

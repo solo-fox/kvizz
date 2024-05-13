@@ -85,4 +85,7 @@ tbody tr {
 tbody tr:last-of-type {
     border-bottom: 2px solid #002A22;
 }
+@media only screen and (max-width: 768px) {
+  width:80vw;
+}
 `

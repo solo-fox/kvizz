@@ -24,7 +24,7 @@ export default function HeaderComponent(){
         <button className="pushable join">
           <span className="front joinf">
             <Link href="/join">
-              <SportsEsportsIcon /> Join a challange
+              <SportsEsportsIcon /> Join
             </Link>
           </span>
         </button>
@@ -66,6 +66,9 @@ text-shadow: 0px 0px 0 rgb(229,94,135),
                  -13px 13px 12px rgba(0,0,0,0.98),
                  -13px 13px 1px rgba(0,0,0,0.5),
                  0px 0px 12px rgba(0,0,0,.2);
+@media only screen and (max-width: 768px) {
+  font-size:100px;
+}
 `
  
 
@@ -85,7 +88,6 @@ background: hsl(345deg 100% 47%);
 outline: none;
 }
 .front {
-display: block;
 padding: 12px 42px;
 border-radius: 12px;
 font-size: 1.25rem;
@@ -111,5 +113,8 @@ background: hsl(169deg 100% 47%);
 }
 .play{
 background: hsl(170deg 100% 32%);
+}  
+@media only screen and (max-width: 768px) {
+  padding:6px 21px;
 }
 `
