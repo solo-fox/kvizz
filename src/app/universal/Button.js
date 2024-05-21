@@ -20,6 +20,7 @@ const Front = styled.span`
   padding: 5px 10px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   transform: translateY(-3px);
 `;

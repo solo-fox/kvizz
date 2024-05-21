@@ -13,19 +13,11 @@ export default function TimerComponent({timerTime, setTimerCompleted}) {
     }
   };
   return(
-    <Timer>
+    <div>
       <Countdown 
         date={Date.now() + timerTime}
         renderer={renderer}
       />
-    </Timer>
+    </div>
   )
 }
-
-const Timer = styled.div`
-margin-left:auto;
-font-weight:800;
-background:#581908;
-padding:0.5rem 1rem;
-border-radius:5px;
-`

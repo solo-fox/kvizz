@@ -4,66 +4,45 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Button3D from "../../universal/Button";
-import PacmanLoader from "react-spinners/PacmanLoader";
-import { nanoid } from 'nanoid'
-import { collection, addDoc } from "firebase/firestore";
-import {db_broadcast, db_store} from '../../firebase';
-import { ref, set } from "firebase/database";
-
+import Loading from "../../universal/Loading";
+import  { create_room } from "../../db/room"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 export default function FormComponent() {
   // State for form inputs
   const [nickname, setNickname] = useState("");
   const [isPublic, setIsPublic] = useState(false);
-  const [maxNumber, setMaxNumber] = useState(2);
+  const [usersnumber, Setusersnumber] = useState(2);
   const [time, setTime] = useState(10);
+  const [rounds, setRounds] = useState(3);
   const [loading, setLoading] = useState(false)
+  const router = useRouter();
   
-  const handleSubmit = async (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault();
+    if (nickname == "") {
+      toast("Nickname cannot be empty", { type : "error"})
+      return;
+    }
     setLoading(true)
+    create_room(nickname, isPublic, usersnumber, time, rounds)
+    .then(({ room_id, user_id }) => {
+      localStorage.setItem("user_id", user_id)
+      toast("Room created!!!", {type: "success"})
+      router.push(`/room/${room_id}/${user_id}`)
+    }).catch((error) => {
+      console.log(error)
+      toast("Oops! An Error occured!", {type: "error"})
+    })
     
-    let room = {
-      users : {
-        [nanoid()] : {
-        name: nickname,
-        host: true,
-        score: 0,
-        onTurn: true
-        }
-      },
-      isPublic,
-      maxNumber,
-      time,
-      word: "Dog"
-    }
-    try {
-      const docRef = await addDoc(collection(db_store, "rooms"), {
-        room: room
-      });
-      console.log("Document written with ID: ", docRef.id);
-      try {
-        set(ref(db_broadcast, docRef.id), {
-          svgLines : ""
-        });
-        console.log("Broadcast written");
-      } catch (e) {
-        console.error("Error adding broadcast: ", e);
-      }
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
   }
   
   return(
     <Form>
-      <Loader style={{display: loading ? "flex" : "none"}}>
-        <PacmanLoader
-        color={"#ea638c"}
-        loading={true}
-        size={50}
-        />
-      </Loader>
+      <ToastContainer pauseOnHover/>
+      <Loading state={loading} />
       <Header>
         <AddBoxIcon />
         <p>Create a Room</p>
@@ -87,14 +66,14 @@ export default function FormComponent() {
         <Group>
           <input 
             className="range" 
-            name="number" 
+            name="users" 
             type="range" 
             max="5" 
             min="2" 
-            value={maxNumber} 
-            onChange={(e) => setMaxNumber(parseInt(e.target.value))} 
+            value={usersnumber} 
+            onChange={(e) => Setusersnumber(parseInt(e.target.value))} 
           />
-          <label htmlFor="number">Max Number: {maxNumber}</label>
+          <label htmlFor="number">Players Number: {usersnumber}</label>
         </Group>
         <Group>
           <input 
@@ -106,7 +85,19 @@ export default function FormComponent() {
             value={time} 
             onChange={(e) => setTime(parseInt(e.target.value))} 
           />
-          <label htmlFor="time"> Time: {time}s</label>
+          <label htmlFor="time"> Time Per Round: {time}s</label>
+        </Group>
+        <Group>
+          <input 
+            className="range" 
+            name="rounds" 
+            type="range" 
+            max="10" 
+            min="2" 
+            value={rounds} 
+            onChange={(e) => setRounds(parseInt(e.target.value))} 
+          />
+          <label htmlFor="time"> Rounds: {rounds}</label>
         </Group>
       </Settings>
       <ButtonGroup>
@@ -125,8 +116,8 @@ export default function FormComponent() {
 const Form = styled.div`
   position:relative;
   background: white;
-  width:30vw;
-  height:50vh;
+  width:40vw;
+  max-height:60vh;
   border-radius:5px;
   padding:1rem 1.5rem;
   display:flex;
@@ -146,21 +137,6 @@ const Form = styled.div`
     width:80vw;
   }
 `;
-
-const Loader = styled.div`
-  position:absolute;
-  width:100%;
-  height:100%;
-  top:0px;
-  right:0px;
-  z-index:100;
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  overflow:hidden;
-`
 
 const Header = styled.div`
   font-family: "Pixelify Sans";

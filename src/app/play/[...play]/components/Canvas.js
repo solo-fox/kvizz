@@ -8,7 +8,7 @@ import React, {
   useState,
   useRef
 } from 'react';
-import Button3D from "../../universal/Button"
+import Button3D from "../../../universal/Button"
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function CanvasComponent({fillColor, color}) {

@@ -3,8 +3,8 @@
 import styled from "styled-components"; import ColorizeIcon from '@mui/icons-material/Colorize';
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Button3D from "../../universal/Button"
-import TimerComponent from "./Timer"
+import Button3D from "../../../universal/Button"
+import TimerComponent from "../../../universal/Timer"
 import {useState} from "react"
 
 export default function ToolsComponent({setColor, color, fillColor, setFillColor}) {
@@ -41,28 +41,37 @@ export default function ToolsComponent({setColor, color, fillColor, setFillColor
       <Button3D b1={"hsl(145deg 100% 47%)" } b2={"hsl(140deg 100% 32%"}>
         <CheckCircleIcon style={{fontSize:"32px" }}/> Submit
       </Button3D>
-      
-      <TimerComponent setTimerCompleted={setTimerCompleted} timerTime={timerTime} />
+      <Timer>
+        <TimerComponent setTimerCompleted={setTimerCompleted} timerTime={timerTime} />
+      </Timer>
     </Tool>
   )
 }
 
-  const Tool = styled.div`
-  position:absolute;
-  top:0px;
-  width:100vw;
-  background-color: #190E4F;
-  color:white;
-  padding:1rem 1rem 10px 2rem;
-  z-index:8;
-  display:flex;
-  align-items:center;
-  gap:1rem;
-  input {
-    border:1px #002A22 solid;
-    outline:none;
-    border-radius:50%;
-    width:32px;
-    height:32px;
-  }
-  `
+const Tool = styled.div`
+position:absolute;
+top:0px;
+width:100vw;
+background-color: #190E4F;
+color:white;
+padding:1rem 1rem 10px 2rem;
+z-index:8;
+display:flex;
+align-items:center;
+gap:1rem;
+input {
+  border:1px #002A22 solid;
+  outline:none;
+  border-radius:50%;
+  width:32px;
+  height:32px;
+}
+`
+
+const Timer = styled.div`
+margin-left:auto;
+font-weight:800;
+background:#581908;
+padding:0.5rem 1rem;
+border-radius:5px;
+`
