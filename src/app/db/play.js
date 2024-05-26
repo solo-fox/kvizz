@@ -123,7 +123,7 @@ export function evalUserScore(room_id, user_id, drawer_id, word) {
         roomData.redirect = false;
         roomData.rounds = roomData.rounds - 1
         const updates = {};
-        updates[`timer/${room_id}`] = { time: roomData.time  }
+        updates[`timer/${room_id}`] = { time: roomData.time+7  }
         update(ref(dbBroadcast), updates);
         if (roomData.rounds <= 0) {
           resolve({

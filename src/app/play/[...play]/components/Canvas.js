@@ -82,7 +82,8 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
         const data = await gameDataResponse.json();
         setTime(data.payload.time);
         setWord(data.payload.word)
-        setStart(true);
+        toast("Timer will start in 5 seconds!")
+        setStart(true)
         setIsValid(true);
       } catch (error) {
         console.error(error);
@@ -92,7 +93,7 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
       }
     }
     getGameData();
-  }, [room_id, user_id]);
+  }, []);
 
   useEffect(() => {
     if (turn) {

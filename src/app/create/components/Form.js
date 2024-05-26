@@ -104,8 +104,8 @@ export default function FormComponent() {
             className="range" 
             name="time" 
             type="range" 
-            max="50" 
-            min="20" 
+            max="200" 
+            min="40" 
             value={time} 
             onChange={(e) => setTime(parseInt(e.target.value))} 
           />
