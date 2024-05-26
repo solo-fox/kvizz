@@ -3,9 +3,9 @@
 import styled from 'styled-components'
 import PacmanLoader from "react-spinners/PacmanLoader";
 
-export default function Loading({ state }) {
+export default function Loading({ state} ) {
   return(
-    <Loader style={ { display: state ? "flex": "none" }}>
+    <Loader style={ { display: state ? "flex" : "none" }}>
       <PacmanLoader
       color={"#ea638c"}
       loading={true}

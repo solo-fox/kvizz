@@ -4,13 +4,8 @@ import styled from "styled-components"; import ColorizeIcon from '@mui/icons-mat
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Button3D from "../../../universal/Button"
-import TimerComponent from "../../../universal/Timer"
-import {useState} from "react"
 
 export default function ToolsComponent({setColor, color, fillColor, setFillColor}) {
-  const [timer, setTimerCompleted] = useState(false);
-  let timerTime = 10000;
-  
   const handleClick = e => {
     switch (e.detail) {
       case 2:
@@ -37,13 +32,6 @@ export default function ToolsComponent({setColor, color, fillColor, setFillColor
         </label>
         <input name="fillcolorpicker" type="color" value={fillColor} onChange={ e => setFillColor(e.target.value) }/>
       </Button3D>
-      
-      <Button3D b1={"hsl(145deg 100% 47%)" } b2={"hsl(140deg 100% 32%"}>
-        <CheckCircleIcon style={{fontSize:"32px" }}/> Submit
-      </Button3D>
-      <Timer>
-        <TimerComponent setTimerCompleted={setTimerCompleted} timerTime={timerTime} />
-      </Timer>
     </Tool>
   )
 }
@@ -66,12 +54,4 @@ input {
   width:32px;
   height:32px;
 }
-`
-
-const Timer = styled.div`
-margin-left:auto;
-font-weight:800;
-background:#581908;
-padding:0.5rem 1rem;
-border-radius:5px;
 `

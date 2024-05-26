@@ -4,17 +4,16 @@ import {
   useParams
 } from 'next/navigation'
 import styled from 'styled-components'
-import UsersList from './components/List'
+import List from './components/List'
 
 export default function Join() {
   
   const {id} = useParams();
   let room_id = id[0]
-  let user_id = id[1]
   
   return (
     <Main>
-    <UsersList room_id={room_id} user_id={user_id} />
+      <List room_id={room_id} />
     </Main>
   );
 }

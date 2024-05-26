@@ -1,10 +1,10 @@
 'use client'
 import styled from "styled-components"; import ColorizeIcon from '@mui/icons-material/Colorize';
 
-export default function WordComponent({ display }) {
+export default function WordComponent({ display , word}) {
   return(
     <Word style={{display: display ? "block" : "none"}}>
-      <p> Dog </p>
+      <p> {word} </p>
     </Word>
   )
 }

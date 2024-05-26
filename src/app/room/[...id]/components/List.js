@@ -1,69 +1,71 @@
 'use client'
 
+import { useState, useEffect } from "react";
+import { reactLocalStorage } from 'reactjs-localstorage';
 import styled from 'styled-components'
 import Err from "../../../universal/error";
 import Loading from "../../../universal/Loading";
 import Users from "./Users";
-import {room_exists} from "../../../db/room";
-import {is_user} from "../../../db/user";
-import { useState, useEffect } from "react";
 
-export default function UsersList({ room_id, user_id }) {
-  const [valid, setState] = useState(null);
+
+export default function List({ room_id }) {
+  const [isValid, setValidState] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [loading1, setLoading1] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(null);
   
-  useEffect(()=> {
-    const user_id_local = localStorage.getItem('user_id');
-    if (user_id_local !== null) {
-      is_user(room_id, user_id)
-      .then((user_id) => {
-        setLoggedIn(true)
-        setLoading1(false)
-      }).catch((error) => {
-        setLoggedIn(false)
-        setLoading1(false)
-      })
-    } else {
-      setLoggedIn(false)
-      setLoading1(false)
+  useEffect(() => { 
+    const user_id_local = reactLocalStorage.get('KVIZZ:USER_ID');
+    if( user_id_local == null ){
+      setLoading(false)
+      setValidState(false)
     }
-  })
+    const validate_backend = async () => {
+      try {
+        const response = await fetch("/api/valid", {
+          method: "POST",
+          body: JSON.stringify({
+            roomId: room_id,
+            userId: user_id_local
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+        if(response.ok) {
+          setLoading(false)
+          setValidState(true)
+        } else {
+          response.json()
+          .then((data)=>{
+            console.log(data)
+          })
+          setLoading(false)
+          setValidState(false)
+        }
+      } catch(error) {
+        console.log(error)
+        setLoading(false)
+        setValidState(false)
+      }
+    }
+    return () => validate_backend()
+  }, [])
+  
+  if (loading) {
+    return <Loading state={loading} />;
+  }
 
-  useEffect(() => {
-    room_exists(room_id) 
-    .then(() => {
-      setState(true)
-      setLoading(false)
-    }).catch((error) => {
-      setState(false)
-      setLoading(false)
-    });
-  })
+  if (!isValid) {
+    return <Err msg="Invalid ID" />;
+  }
   
   return(
-    <List>
-    {
-      loggedIn === false ? (
-        <Err msg="WHO ARE YOU???" />
-      ) : loggedIn === true ? (
-        valid === false ? (
-          <Err msg="Room ID is Invalid" />
-        ) : valid === true ? (
-          <Users room_id={room_id} user_id={user_id} />
-        ) : (
-          <Loading state={loading} />
-        )
-      ) : (
-        <Loading state={loading} />
-      )
-    }
-    </List>
+    <UList>
+      <Users room_id={room_id} />
+    </UList>
   );
 }
 
-const List = styled.div`
+const UList = styled.div`
   position:relative;
   background: white;
   width:40vw;

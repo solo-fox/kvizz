@@ -2,6 +2,7 @@ import "./globals.css";
 import { Ubuntu } from "next/font/google";
 import StyledComponentsRegistry from './registry.js'
 import NavBar from './universal/NavBar'
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Ubuntu({ subsets: ["latin"] , weight: "300"});
 

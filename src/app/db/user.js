@@ -1,13 +1,12 @@
 import {
   nanoid
 } from 'nanoid'
-import {
-  db_store
-} from '../firebase';
+import { dbStore } from '../firebase';
 import {
   doc,
   updateDoc,
   getDoc,
+  arrayUnion
 } from "firebase/firestore";
 
 
@@ -15,32 +14,38 @@ export function create_user(room_id, nickname) {
   return new Promise(async (resolve, reject) => {
     try {
       const userId = nanoid();
-      const roomRef = doc(db_store, "rooms", room_id);
+      const roomRef = doc(dbStore, "rooms", room_id);
       const roomSnap = await getDoc(roomRef);
       const room_max_users = roomSnap.data().room.usersnumber;
       const currentData = roomSnap.data().users;
-      if(Object.keys(currentData).length == room_max_users) {
-        reject("full")
+      if(currentData.length == room_max_users) {
+        reject({
+          reason: "full"
+        })
         return;
       }
       updateDoc(roomRef, {
-        users: {
-          ...currentData,
-          [userId]: {
+        users: arrayUnion(
+          {
+            id: userId,
             name: nickname,
             host: false,
             score: 0,
-            onTurn: false
+            onTurn: false,
+            typing: false
           }
-        }
+        )
       })
-      resolve(
-        userId
-      )
+      resolve({
+        user_id: userId
+      })
       console.log("User created")
     } catch (e) {
       console.error(e)
-      reject(e)
+      reject({
+        reason: "error",
+        error: e
+      })
     }
   })
 }
@@ -48,10 +53,10 @@ export function create_user(room_id, nickname) {
 export function is_user(room_id, user_id) {
   return new Promise(async (resolve, reject) => {
     try {
-      const roomRef = doc(db_store, "rooms", room_id);
+      const roomRef = doc(dbStore, "rooms", room_id);
       const roomSnap = await getDoc(roomRef);
       const currentData = roomSnap.data().users;
-      if (user_id in currentData) {
+      if (currentData.some(user => user["id"] == user_id)) {
         resolve(user_id)
       } else {
         reject(user_id)

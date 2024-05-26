@@ -13,7 +13,7 @@ export default function CreateUser() {
   
   return (
     <Main>
-      <CUserForm id={id}/>
+      <CUserForm room_id={id}/>
     </Main>
   );
 }

@@ -2,12 +2,12 @@
 
 import styled from "styled-components";
 import HeaderComponent from "./components/Header"
-import UsersComponent from "./components/Users"
+import RoomsComponent from "./components/Rooms"
 export default function Home() {
   return(
     <Main>
       <HeaderComponent />
-      <UsersComponent />
+      <RoomsComponent />
     </Main>
   )
 }

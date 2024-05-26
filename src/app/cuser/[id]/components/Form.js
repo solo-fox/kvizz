@@ -4,78 +4,66 @@ import styled from 'styled-components'
 import Err from "../../../universal/error";
 import Loading from "../../../universal/Loading";
 import Button3D from "../../../universal/Button";
-import {create_user} from "../../../db/user";
-import {room_exists} from "../../../db/room";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
-export default function CUserForm({id}) {
-  const [valid, setState] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function CUserForm({room_id}) {
   const [nickname, setNickname] = useState("");
   const router = useRouter();
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if(nickname == ""){
       toast("Nickname cannot be empty", { type: "error" })
       return;
     }
-    create_user(id, nickname)
-    .then((user_id)=>{
-      localStorage.setItem("user_id", user_id)
-      toast("Let's Gooooo....", {type: "success"})
-      router.push(`/room/${id}/${user_id}`)
-      console.log(user_id)
-    })
-    .catch((error)=>{
-      if(error == "full") {
-        toast("The room is full!!!", { type: "error" })
-      } else {
-        toast("You arenot a Human", { type: "error" })
+    toast("Creating User...", { type:"pending" })
+    try {
+        const response = await fetch("/api/cuser", {
+          method: "POST",
+          body: JSON.stringify({
+            roomId: room_id,
+            nickname: nickname
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+        if(response.ok) {
+          const data = await response.json();
+          reactLocalStorage.set("KVIZZ:USER_ID", data.payload.user_id)
+          router.push(`/room/${room_id}`)
+          toast("Let's Gooooo...", { type: "success" })
+        } else {
+          const data = await response.json();
+          if(data.payload.error.reason == "full"){
+            toast("Room is full...", { type: "warning" })
+            return;
+          }
+          toast("Cannot create User...", { type: "error" })
+        }
+      } catch(error) {
         console.log(error)
+        toast("Cannot create User...", { type: "error" })
       }
-    })
   }
-  
-  useEffect(() => {
-    room_exists(id) 
-    .then(() => {
-      setState(true)
-      setLoading(false)
-    }).catch((error) => {
-      setState(false)
-      setLoading(false)
-    });
-  })
-  
   return(
     <Form>
-      {
-        valid === false
-        ? <Err msg="Room ID is Invalid" />
-        : valid === true
-        ? (
-        <>
-        <ToastContainer />
-        <input 
-          type="text" 
-          placeholder="Nickname" 
-          value={nickname} 
-          onChange={(e) => setNickname(e.target.value)} 
-        />
-        <Button3D 
-          b1={"hsl(145deg 100% 47%)" } 
-          b2={"hsl(140deg 100% 32%)"} 
-          onClick={handleSubmit}
-        >
-          Join
-        </Button3D>
-        </>
-        )
-        : <Loading state={loading}/>
-      }
+      <ToastContainer />
+      <input 
+        type="text" 
+        placeholder="Nickname" 
+        value={nickname} 
+        onChange={(e) => setNickname(e.target.value)} 
+      />
+      <Button3D 
+        b1={"hsl(145deg 100% 47%)" } 
+        b2={"hsl(140deg 100% 32%)"} 
+        onClick={handleSubmit}
+      >
+        Join
+      </Button3D>
     </Form>
   );
 }

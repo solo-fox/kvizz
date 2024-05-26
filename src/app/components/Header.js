@@ -21,6 +21,13 @@ export default function HeaderComponent(){
             </Link>
           </span>
         </button>
+        <button className="pushable join">
+          <span className="front joinf">
+            <Link href="/join">
+              <JoinFullIcon />
+            </Link>
+          </span>
+        </button>
       </ButtonGroup>
       </Header>
   )
