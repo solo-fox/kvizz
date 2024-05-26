@@ -7,7 +7,7 @@ import {
 
 export async function POST(req, res) {
   const body = await req.json()
-  const fetchData = await fetch("http://localhost:3000/words.json")
+  const fetchData = await fetch("https://kvizz.vercel.app/words.json")
   const data = await fetchData.json();
   let randomIndex = Math.floor(Math.random()*data["words"].length);
   let randomItem = [data["words"][randomIndex]]
