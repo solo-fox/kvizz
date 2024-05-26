@@ -37,7 +37,7 @@ export default function Users( {
       const users = roomSnap?.data()?.users || [];
       const roomData = roomSnap?.data()?.room || {};
       setPlayRunning(roomData.playIsOn)
-      if (roomData.redirect !== false) {
+      if (roomData.redirect == true) {
         handleRedirect();
       }
       if(roomData.rounds == 0){

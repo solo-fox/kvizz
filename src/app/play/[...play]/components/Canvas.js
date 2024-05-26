@@ -38,6 +38,11 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
   useEffect(() => {
     async function validateBackend() {
       const user_id_local = reactLocalStorage.get('KVIZZ:USER_ID');
+      console.log(user_id_local)
+      if(user_id_local == null){
+        setIsValid(false)
+        setLoading(false)
+      }
       try {
         const response = await fetch("/api/valid", {
           method: "POST",
@@ -47,12 +52,13 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
           }
         });
   
-        if (!response.ok) {
+        if (response.ok == false) {
           setIsValid(false);
           setLoading(false);
           return;
         }
         setTurn(user_id_local === user_id);
+        setIsValid(true)
       } catch (error) {
         console.error(error);
         setIsValid(false);
@@ -84,7 +90,6 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
         setWord(data.payload.word)
         toast("Timer will start in 5 seconds!")
         setStart(true)
-        setIsValid(true);
       } catch (error) {
         console.error(error);
         setIsValid(false);
@@ -150,6 +155,7 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
   const handleMouseMove = (e) => handleMoving(e.clientX, e.clientY);
   const handleTouchMove = (e) => handleMoving(e.touches[0].clientX, e.touches[0].clientY);
   const handleStopDrawing = () => setIsDrawing(false);
+  const erase = () => setLines([]);
   const handelTimerFinished = async () => {
     setLoading(true)
     if( !turn ) {
@@ -168,7 +174,6 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
     }
     router.push(`/room/${room_id}`)
   }
-  const erase = () => setLines([]);
   
   useEffect(() => {
     const runCountDown = async () => {
@@ -188,55 +193,71 @@ export default function CanvasComponent({ fillColor, color, room_id, user_id }) 
     }
   }, [time, start]);
   
-  if (loading) {
-    return <Loading state={loading} />;
-  }
-
-  if (!isValid) {
-    return <Err msg="Invalid ID" />;
-  }
 
   return (
-    <>
-      <ToastContainer />
-      <CanvasBoard>
-        <CanvasData>
-          <Countdown>{time}</Countdown>
-          { word !== "" && turn ? <Word> {word} </Word> :  <input onChange={(e) => setGuess(e.target.value)} type="text" placeholder="Guess the word" ref={withMask("a".repeat(word.length))} /> }
-        </CanvasData>
-        <Layer style={{ display: turn ? "none" : "block" }} />
-        {turn && (
-          <Del>
-            <Button3D b1={"hsl(330deg 100% 47%)"} b2={"hsl(320deg 100% 32%)"} onClick={erase}>
-              <DeleteIcon style={{ fontSize: "32px" }} /> Delete
-            </Button3D>
-          </Del>
+  <>
+    <ToastContainer />
+    {isValid == true ? (
+      <>
+        <CanvasBoard>
+          <CanvasData>
+            <Countdown>{time}</Countdown>
+            {word != "" && turn ? (
+              <Word>{word}</Word>
+            ) : (
+              <input
+                onChange={(e) => setGuess(e.target.value)}
+                type="text"
+                placeholder="Guess the word"
+                ref={withMask("a".repeat(word.length))}
+              />
+            )}
+          </CanvasData>
+          <Layer style={{ display: turn ? "none" : "block" }} />
+          {turn && (
+            <Del>
+              <Button3D b1="hsl(330deg 100% 47%)" b2="hsl(320deg 100% 32%)" onClick={erase}>
+                <DeleteIcon style={{ fontSize: "32px" }} /> Delete
+              </Button3D>
+            </Del>
+          )}
+          <Canvas
+            ref={svgRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleStopDrawing}
+            onMouseLeave={handleStopDrawing}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleStopDrawing}
+            style={{ touchAction: "none" }}
+          >
+            {lines.map(({ id, points, strokeColor, fill }) => (
+              <polyline
+                key={id}
+                fill={fill}
+                stroke={strokeColor}
+                strokeWidth="2"
+                points={points.map((point) => `${point.x},${point.y}`).join(" ")}
+              />
+            ))}
+          </Canvas>
+        </CanvasBoard>
+      </>
+    ) : (
+      <>
+        {isValid == null ? (
+          <Loading state={loading} />
+        ) : (
+          <Err msg="Invalid ID" />
         )}
-        <Canvas
-          ref={svgRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleStopDrawing}
-          onMouseLeave={handleStopDrawing}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleStopDrawing}
-          style={{ touchAction: "none" }}
-        >
-          {lines.map(({ id, points, strokeColor, fill }) => (
-            <polyline
-              key={id}
-              fill={fill}
-              stroke={strokeColor}
-              strokeWidth="2"
-              points={points.map(point => `${point.x},${point.y}`).join(" ")}
-            />
-          ))}
-        </Canvas>
-      </CanvasBoard>
-    </>
-  );
+      </>
+    )}
+  </>
+);
+
 }
+
 
 const Canvas = styled.svg`
   width: 100%;

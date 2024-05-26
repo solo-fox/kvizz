@@ -47,20 +47,24 @@ export default function List({ room_id }) {
         setValidState(false)
       }
     }
-    return () => validate_backend()
-  }, [])
-  
-  if (loading) {
-    return <Loading state={loading} />;
-  }
-
-  if (!isValid) {
-    return <Err msg="Invalid ID" />;
-  }
+    validate_backend()
+  }, [room_id])
   
   return(
     <UList>
+    {isValid == true ? (
       <Users room_id={room_id} />
+    ) : (
+    <>
+    {
+      isValid == null ? (
+        <Loading state={loading} />
+      ) : (
+       <Err msg="Invalid ID" />
+      )
+    }
+    </>
+    )}
     </UList>
   );
 }

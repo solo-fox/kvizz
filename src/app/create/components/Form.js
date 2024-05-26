@@ -15,7 +15,7 @@ export default function FormComponent() {
   const [roomName, setRoomName] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [usersnumber, Setusersnumber] = useState(2);
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(40);
   const [rounds, setRounds] = useState(3);
   const [loading, setLoading] = useState(false)
   const router = useRouter()
