@@ -75,7 +75,7 @@ The Game is over, What a release!
             {topUsersList[1]?.name ?? "None"}
           </p>
         <p className="number">
-        {topUsersList[1]?.name ?? "None"}
+        {topUsersList[1]?.score ?? "None"}
           </p>
         </div>
         </div> < />
