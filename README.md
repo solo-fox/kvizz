@@ -77,11 +77,17 @@ Ensure you have the following installed:
 
 ## Screenshots
 ![s1](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s1.png)
+
 ![s2](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s2.png)
+
 ![s3](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s3.png)
-![s14(https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s4.png)
+
+![s14](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s4.png)
+
 ![s5](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s5.png)
+
 ![s6](https://raw.githubusercontent.com/solo-fox/kvizz/main/screenshots/s6.png)
+
 ## Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
